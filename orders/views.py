@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, reverse
 
@@ -24,20 +24,25 @@ def login_view(request):
     return render(request, "orders/login.html", {"message": "Invalid credentials"})
 
 
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+
 def register(request):
     user = User(
         username=request.POST["username"],
         first_name=request.POST["first_name"],
         last_name=request.POST["last_name"],
         password=request.POST["password"],
-        email=request.POST["email"]
+        email=request.POST["email"],
     )
     user.save()
-    context = {
-        "user": user
-    }
+    context = {"user": user}
     return render(request, "orders/index.html", context)
 
 
 def registration_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index"))
     return render(request, "orders/registration.html")
