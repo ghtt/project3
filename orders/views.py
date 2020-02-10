@@ -1,6 +1,43 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.contrib.auth import login, authenticate
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, reverse
+
+from .models import User
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Project 3: TODO")
+    if not request.user.is_authenticated:
+        return render(request, "orders/login.html", {"messages": None})
+    context = {"user": request.user}
+    return render(request, "orders/index.html", context)
+
+
+def login_view(request):
+    username = request.POST["username"]
+    password = request.POST["password"]
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        return HttpResponseRedirect(reverse("index"))
+
+    return render(request, "orders/login.html", {"message": "Invalid credentials"})
+
+
+def register(request):
+    user = User(
+        username=request.POST["username"],
+        first_name=request.POST["first_name"],
+        last_name=request.POST["last_name"],
+        password=request.POST["password"],
+        email=request.POST["email"]
+    )
+    user.save()
+    context = {
+        "user": user
+    }
+    return render(request, "orders/index.html", context)
+
+
+def registration_view(request):
+    return render(request, "orders/registration.html")

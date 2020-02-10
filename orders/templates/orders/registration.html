@@ -1,0 +1,18 @@
+{% extends 'orders/base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block body %}
+    <h1>Registration</h1>
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        <p>Username</p><input name="username" type="text" required min="3">
+        <p>First name</p><input name="first_name" type="text" required>
+        <p>Last name</p><input name="last_name" type="text" required>
+        <p>Email</p><input name="email" type="email" required>
+        <p>Password</p><input name="password" type="password" min="5" required>
+        <p>Confirm password</p><input name="confirm_password" type="password" min="5" required>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

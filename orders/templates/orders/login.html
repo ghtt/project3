@@ -1,0 +1,20 @@
+{% extends 'orders/base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block body %}
+    <h1>Login</h1>
+
+    {% if message %}
+    <h4>{{ message }}</h4>
+    {% endif %}
+    
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <p>Username</p><input name="username" type="text" required min="3">
+        <p>Password</p><input name="password" type="password" min="5">
+        <br>
+        <input type="submit" value="Login">
+    </form>
+    <h3>If you don't have account, please register <a href="{% url 'registration' %}">here</a></h3>
+{% endblock %}
