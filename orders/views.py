@@ -4,7 +4,7 @@ from django.shortcuts import render, reverse
 
 from .models import User
 
-# Create your views here.
+
 def index(request):
     if not request.user.is_authenticated:
         return render(request, "orders/login.html", {"messages": None})
@@ -30,12 +30,10 @@ def register(request):
         first_name=request.POST["first_name"],
         last_name=request.POST["last_name"],
         password=request.POST["password"],
-        email=request.POST["email"]
+        email=request.POST["email"],
     )
     user.save()
-    context = {
-        "user": user
-    }
+    context = {"user": user}
     return render(request, "orders/index.html", context)
 
 
