@@ -4,7 +4,7 @@ from django.shortcuts import render, reverse
 
 from .models import User
 
-# Create your views here.
+
 def index(request):
     if not request.user.is_authenticated:
         return render(request, "orders/login.html", {"messages": None})
