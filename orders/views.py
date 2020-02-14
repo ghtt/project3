@@ -2,13 +2,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, reverse
 
-from .models import User
+from .models import User, Category
 
 
 def index(request):
     if not request.user.is_authenticated:
         return render(request, "orders/login.html", {"messages": None})
-    context = {"user": request.user}
+    context = {"user": request.user, "menu": Category.objects.all()}
     return render(request, "orders/index.html", context)
 
 

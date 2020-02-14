@@ -2,6 +2,55 @@
 
 {% block title %} Main page {% endblock %}
 
+{% block script %}
+    {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'script.js' %}"></script>
+{% endblock %}
+
 {% block body %}
-    Main page
+      
+    <h1>Menu</h1>
+    <form>
+    {% csrf_token %}  
+    {% for category in menu %}
+        <h3>{{category.name}}</h3>
+            <table id="category_{{category.id}}" width=50% style="text-align: center;" border="1px">
+                <tr style="background-color: whitesmoke">
+                    <th></th>
+                    <th>Small</th>
+                    <th>Large</th>
+                    <th>Toppings</th>
+                    <!-- <th></th>
+                    <th></th> -->
+                </tr>
+                {% for product in category.products.all %}
+                <tr id="{{product.id}}">
+                    <td>{{product.name}}</td>
+                    {% for price in product.prices.all %}
+                        <td>{{price.value}}<input type="radio" name="price_{{product.id}}" id="{{price.id}}"></td>
+
+                    {% empty %}
+                        <td></td>
+                        <td></td>
+                        
+                    {% endfor %}
+                    {% if product.number_of_toppings > 0 %}
+                    <td>
+                        {% for topping in product.toppings.all %}
+                        <input type="checkbox" id={{topping.id}} name={{topping.name}} value="topping.name">
+                        <label for={{topping.name}}>{{topping.name}}</label><br>
+                        {% endfor %}
+                        </select>
+                    </td>
+                    {% else %}
+                    <td>Not available</td>
+                    {% endif%}
+                    <!-- <td><input name="add_{{position.id}}" type="button" value="Add to Cart"></td> -->
+                </tr>
+                {% endfor %}
+            </table>
+        
+    {% endfor %}
+    </form>
 {% endblock %}

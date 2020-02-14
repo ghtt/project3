@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
+    products = models.ManyToManyField("Product", related_name="products", blank=True)
 
     def __str__(self):
         return self.name
@@ -25,18 +26,12 @@ class Product(models.Model):
     name = models.CharField(max_length=64)
     number_of_toppings = models.IntegerField(choices=TOPPINGS_NUMBER, default=ZERO)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    # price ? FK or value?
+    prices = models.ManyToManyField("Price", related_name="prices", blank=True)
+    toppings = models.ManyToManyField("Topping", related_name="toppings", blank=True)
 
     def __str__(self):
-        name = " ".join(
-            [
-                str(self.category),
-                self.name,
-                str(self.number_of_toppings),
-                "topping" if self.number_of_toppings == 1 else "toppings",
-            ]
-        )
-        return name
+        # with toppings: {', '.join([topping.name for topping in self.toppings.all()])}.
+        return f"{self.name} Prices: {', '.join(['='.join((price.name, str(price.value))) for price in self.prices.all()])}"
 
 
 class Price(models.Model):
@@ -45,6 +40,9 @@ class Price(models.Model):
     PRICE_TYPE = [(SMALL, "Small"), (LARGE, "Large")]
     name = models.CharField(max_length=1, choices=PRICE_TYPE, default=SMALL)
     value = models.FloatField()
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, null=True, default=None
+    )
 
     def __str__(self):
         return f"{self.name} = {self.value}"
