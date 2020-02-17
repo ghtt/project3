@@ -2,6 +2,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, reverse
 
+
 from .models import User, Category
 
 

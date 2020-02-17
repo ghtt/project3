@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-      
+    {% load range %}
     <h1>Menu</h1>
     <form>
     {% csrf_token %}  
@@ -37,12 +37,17 @@
                     {% endfor %}
                     {% if product.number_of_toppings > 0 %}
                     <td>
-                        {% for topping in product.toppings.all %}
-                        <input type="checkbox" id={{topping.id}} name={{topping.name}} value="topping.name">
-                        <label for={{topping.name}}>{{topping.name}}</label><br>
-                        {% endfor %}
+                        {% for _ in product.number_of_toppings|get_range %}
+                        <select>
+                            <option disabled value="Select topping" selected>Select topping</option>
+                            {% for topping in product.toppings.all %}
+                            <option value="{{topping.name}}">{{topping.name}}</option>
+                            {% endfor %}
                         </select>
+                        <br>
+                        {% endfor %}
                     </td>
+                    
                     {% else %}
                     <td>Not available</td>
                     {% endif%}
