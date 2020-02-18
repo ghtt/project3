@@ -18,8 +18,7 @@
             <table id="category_{{category.id}}" width=50% style="text-align: center;" border="1px">
                 <tr style="background-color: whitesmoke">
                     <th></th>
-                    <th>Small</th>
-                    <th>Large</th>
+                    <th>Size - Price</th>
                     <th>Toppings</th>
                     <!-- <th></th>
                     <th></th> -->
@@ -27,14 +26,16 @@
                 {% for product in category.products.all %}
                 <tr id="{{product.id}}">
                     <td>{{product.name}}</td>
-                    {% for price in product.prices.all %}
-                        <td>{{price.value}}<input type="radio" name="price_{{product.id}}" id="{{price.id}}"></td>
+                    <td>
+                        <select>
+                        {% for price in product.prices.all %}
+                            <option name="price_{{product.id}}" id="{{price.id}}">{{price}}</option>
+                        {% empty %}
+                            No price
+                        {% endfor %}
+                        </select>
+                    </td>
 
-                    {% empty %}
-                        <td></td>
-                        <td></td>
-                        
-                    {% endfor %}
                     {% if product.number_of_toppings > 0 %}
                     <td>
                         {% for _ in product.number_of_toppings|get_range %}

@@ -45,7 +45,7 @@ class Price(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} = {self.value}"
+        return f"{self.name} - ${self.value}"
 
 
 class Topping(models.Model):
