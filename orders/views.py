@@ -1,9 +1,9 @@
 from django.contrib.auth import login, logout, authenticate
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
+from django.core import serializers
 
-
-from .models import User, Category
+from .models import User, Category, Price, Product
 
 
 def index(request):
@@ -47,3 +47,21 @@ def registration_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("index"))
     return render(request, "orders/registration.html")
+
+
+def get_product_info(request):
+    product_id = request.GET["productId"]
+    prices = Price.objects.filter(product=product_id)
+    toppings = Product.objects.get(pk=product_id).toppings.all()
+    data = serializers.serialize("json", prices)
+    data_2 = serializers.serialize("json", toppings)
+
+    return JsonResponse({"prices": data, "toppings": data_2})
+
+
+def add_to_cart(request):
+    product_id = request.POST["product"]
+    price_id = request.POST["price"]
+    topping = request.POST["topping"]
+    print(product_id, price_id, topping)
+    return HttpResponse(200)

@@ -10,52 +10,27 @@
 
 {% block body %}
     {% load range %}
+    {% csrf_token %} 
     <h1>Menu</h1>
-    <form>
-    {% csrf_token %}  
     {% for category in menu %}
+    <form action="add_to_cart" method="POST">    
         <h3>{{category.name}}</h3>
-            <table id="category_{{category.id}}" width=50% style="text-align: center;" border="1px">
-                <tr style="background-color: whitesmoke">
-                    <th></th>
-                    <th>Size - Price</th>
-                    <th>Toppings</th>
-                    <!-- <th></th>
-                    <th></th> -->
-                </tr>
-                {% for product in category.products.all %}
-                <tr id="{{product.id}}">
-                    <td>{{product.name}}</td>
-                    <td>
-                        <select>
-                        {% for price in product.prices.all %}
-                            <option name="price_{{product.id}}" id="{{price.id}}">{{price}}</option>
-                        {% empty %}
-                            No price
-                        {% endfor %}
-                        </select>
-                    </td>
-
-                    {% if product.number_of_toppings > 0 %}
-                    <td>
-                        {% for _ in product.number_of_toppings|get_range %}
-                        <select>
-                            <option disabled value="Select topping" selected>Select topping</option>
-                            {% for topping in product.toppings.all %}
-                            <option value="{{topping.name}}">{{topping.name}}</option>
-                            {% endfor %}
-                        </select>
-                        <br>
-                        {% endfor %}
-                    </td>
-                    
-                    {% else %}
-                    <td>Not available</td>
-                    {% endif%}
-                    <!-- <td><input name="add_{{position.id}}" type="button" value="Add to Cart"></td> -->
-                </tr>
-                {% endfor %}
-            </table>
+            <div id="category_{{category.id}}">
+                Type: 
+                <select id="{{category.id}}_product">
+                    {% for product in category.products.all %}
+                    <option value="{{product.id}}">{{product.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                Size and price: 
+                <select id="{{category.id}}_price"></select>
+                <br>
+                Toppings: 
+                <select id="{{category.id}}_topping"></select>
+                <br>
+                <input name="add" type="button" value="Add to Cart"></td>
+            </div>
         
     {% endfor %}
     </form>
