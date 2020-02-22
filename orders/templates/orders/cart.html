@@ -1,0 +1,26 @@
+{% extends 'orders/base.html' %}
+
+{% block title %} Cart {% endblock %}
+
+
+{% block body %}
+    <h1>Cart</h1>
+    <ol>
+        {% for order in orders %}
+            <li>{{order.product.name}}
+            {% if order.toppings %}
+                with
+                {% for topping in order.toppings %}
+                    {{topping.name}} and 
+                {% endfor %}
+            {% endif %}
+            for price ${{order.price.value}}
+            </li>
+            
+        {% empty %}
+        Your cart is empty
+
+        {% endfor %}
+    </ol>
+<a href="{% url 'index' %}">Back to menu</a>
+{% endblock %}

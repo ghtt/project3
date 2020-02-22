@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function get_product_info(item, productId) {
         $.get("/get_product_info", { productId: productId }, function (data) {
-
+            console.log(data);
             var prices = data["prices"];
             prices = JSON.parse(prices);
 
@@ -38,15 +38,20 @@ document.addEventListener('DOMContentLoaded', () => {
             toppings = JSON.parse(toppings);
 
             //add toppings to select item
-            if (toppings.length > 0) {
+            if (data["number_of_toppings"] > 0) {
 
                 var topping_selector = item.parentNode.querySelector("select[id$=topping]");
                 topping_selector.innerHTML = "";
+
+                if (data["number_of_toppings"] > 1) {
+                    topping_selector.multiple = true;
+                }
 
                 for (const topping of toppings) {
                     var topping_option = document.createElement("option");
                     topping_option.value = topping["pk"];
                     topping_option.text = topping["fields"]["name"];
+
                     topping_selector.add(topping_option);
                 };
 
@@ -87,9 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // get the item info and add it to request
             const product = button.parentElement.querySelector("select[id$=product]");
             const price = button.parentElement.querySelector("select[id$=price]");
-            const topping = button.parentElement.querySelector("select[id$=topping]");
+            const toppings = button.parentElement.querySelector("select[id$=topping]");
 
-            var data = { product: null, price: null, topping: null };
+            var data = { product: null, price: null, topping: new Array() };
 
             if (product.selectedOptions[0]) {
                 data["product"] = product.selectedOptions[0].value;
@@ -98,10 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (price.selectedOptions[0]) {
                 data["price"] = price.selectedOptions[0].value;
             }
-            if (topping.selectedOptions[0]) {
-                data["topping"] = topping.selectedOptions[0].value;
-            }
 
+            for (topping of toppings.selectedOptions) {
+                data["topping"].push(topping.value);
+            };
+
+            console.log(data);
             // send ajax request to add item to the cart
             $.post("add_to_cart", data);
 
